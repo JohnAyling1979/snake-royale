@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react"
-import { GameState } from "./logic.ts"
-import "./App.css"
+import { useEffect, useState } from 'react';
+import { GameState } from './logic.ts';
+import './App.css';
 
 function App() {
-  const [game, setGame] = useState<GameState>()
+  const [game, setGame] = useState<GameState>();
   useEffect(() => {
     Rune.initClient({
       onChange: ({ game }) => {
-        setGame(game)
+        setGame(game);
       },
-    })
-  }, [])
+    });
+  }, []);
 
   if (!game) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
     <>
       Game
     </>
-  )
+  );
 }
 
-export default App
+export default App;

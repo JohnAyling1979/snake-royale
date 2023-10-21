@@ -1,30 +1,36 @@
-import type { RuneClient } from "rune-games-sdk/multiplayer"
+import type { RuneClient } from 'rune-games-sdk/multiplayer';
+
+type Player = {
+  name: string;
+  score: number;
+}
 
 export interface GameState {
-  count: number
+  players: {
+    [playerId: string]: Player;
+  };
 }
 
 type GameActions = {
-  increment: (params: { amount: number }) => void
+  eat: (params: { playerId: string}) => void;
 }
 
 declare global {
-  const Rune: RuneClient<GameState, GameActions>
+  const Rune: RuneClient<GameState, GameActions>;
 }
 
-export function getCount(game: GameState) {
-  return game.count
-}
 
 Rune.initLogic({
-  minPlayers: 1,
+  minPlayers: 2,
   maxPlayers: 4,
   setup: (): GameState => {
-    return { count: 0 }
+    return {
+      players: {},
+    };
   },
   actions: {
-    increment: ({ amount }, { game }) => {
-      game.count += amount
+    eat: ({ playerId}, { game }) => {
+      game.players[playerId].score += 1;
     },
   },
-})
+});
