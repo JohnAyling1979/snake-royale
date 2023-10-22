@@ -153,6 +153,21 @@ const updateSnake = (player: Player) => {
   }
 };
 
+const  checkAppleCollision = (player: Player, game: GameState) => {
+  const head = player.sections[0];
+
+  if (head.x <= game.food.x + FOOD_SIZE &&
+    head.x + PLAYER_SIZE >= game.food.x &&
+    head.y <= game.food.y + FOOD_SIZE &&
+    head.y + PLAYER_SIZE >= game.food.y) {
+
+    game.food.x = Math.floor(Math.random() * (GAME_WIDTH - FOOD_SIZE));
+    game.food.y = Math.floor(Math.random() * (GAME_HEIGHT - FOOD_SIZE));
+
+    player.upgrades++;
+  }
+};
+
 Rune.initLogic({
   minPlayers: 1,
   maxPlayers: 1,
@@ -163,7 +178,7 @@ Rune.initLogic({
         sections: startPosition[index],
         direction: startDirection[index] as Player['direction'],
         speed: SPEED,
-        upgrades: 10,
+        upgrades: 0,
       };
       return acc;
     }, {} as GameState['players']);
@@ -239,6 +254,7 @@ Rune.initLogic({
   update: ({ game }) => {
     Object.keys(game.players).forEach((playerId) => {
       updateSnake(game.players[playerId]);
+      checkAppleCollision(game.players[playerId], game);
     });
   }
 });
