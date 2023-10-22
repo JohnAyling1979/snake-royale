@@ -15,13 +15,13 @@ type RunePlayers = {
 
 function App() {
   const [game, setGame] = useState<GameState>();
-  const [playerId, setPlayerId] = useState<string>();
+  const [playerId, setPlayerId] = useState<string>('');
 
   useEffect(() => {
     Rune.initClient({
       onChange: ({ game, yourPlayerId }) => {
         setGame(game);
-        setPlayerId(yourPlayerId);
+        setPlayerId(yourPlayerId ?? '');
       },
     });
   }, []);
@@ -32,8 +32,8 @@ function App() {
 
   return (
     <>
-      <Screen player={playerId ?? ''} game={game} />
-      <ButtonSection />
+      <Screen player={playerId} game={game} />
+      <ButtonSection canUpgrade={game.players[playerId].canUpgrade} />
     </>
   );
 }

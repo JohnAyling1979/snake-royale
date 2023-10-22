@@ -1,9 +1,17 @@
 import type { RuneClient } from 'rune-games-sdk/multiplayer';
 
+
+export type PlayerSection = {
+  x: number;
+  y: number;
+  active: boolean;
+}
+
 type Player = {
-  sections: {x: number, y: number}[];
+  sections: PlayerSection[];
   direction: 'up' | 'down' | 'left' | 'right';
   speed: number;
+  canUpgrade: boolean;
 }
 
 export interface GameState {
@@ -18,6 +26,8 @@ export interface GameState {
 
 type GameActions = {
   changeDirection: (direction: Player['direction']) => void;
+  increaseSpeed: () => void;
+  increaseLength: () => void;
 }
 
 declare global {
@@ -25,17 +35,29 @@ declare global {
 }
 
 export const GAME_WIDTH = 450;
-export const GAME_HEIGHT = 800;
+export const GAME_HEIGHT = 600;
 export const UPDATES_PER_SECOND = 30;
-export const PLAYER_SIZE = 10;
-export const FOOD_SIZE = 10;
+export const PLAYER_SIZE = 20;
+export const FOOD_SIZE = 20;
 export const SPEED = 2;
 
 const startPosition = [
-  { x: GAME_WIDTH / 2 - 10, y: 0 },
-  { x: GAME_WIDTH - 20, y: GAME_HEIGHT / 2 - 10 },
-  { x: GAME_WIDTH / 2 - 10, y: GAME_HEIGHT -20 },
-  { x: 0, y: GAME_HEIGHT / 2 - 10 },
+  [
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: 0, active: true },
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: - PLAYER_SIZE, active: false },
+  ],
+  [
+    { x: GAME_WIDTH - PLAYER_SIZE, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: true },
+    { x: GAME_WIDTH, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: false },
+  ],
+  [
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: GAME_HEIGHT - PLAYER_SIZE, active: true },
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: GAME_HEIGHT, active: false },
+  ],
+  [
+    { x: 0, y: GAME_HEIGHT / 2 - (PLAYER_SIZE / 2), active: true },
+    { x: - (PLAYER_SIZE / 2), y: GAME_HEIGHT / 2 - (PLAYER_SIZE / 2), active: false },
+  ],
 ];
 
 const startDirection = [
@@ -46,26 +68,38 @@ const startDirection = [
 ];
 
 const updatePosition = (player: Player) => {
-  const head = player.sections[0];
-  const newHead = { ...head };
+  for (let i = player.sections.length - 1; i >= 0; i--) {
+    const section = player.sections[i];
 
-  switch (player.direction) {
-    case 'up':
-      newHead.y -= player.speed;
-      break;
-    case 'down':
-      newHead.y += player.speed;
-      break;
-    case 'left':
-      newHead.x -= player.speed;
-      break;
-    case 'right':
-      newHead.x += player.speed;
-      break;
+    if (i === 0) {
+      switch (player.direction) {
+        case 'up':
+          section.y -= player.speed;
+          break;
+        case 'down':
+          section.y += player.speed;
+          break;
+        case 'left':
+          section.x -= player.speed;
+          break;
+        case 'right':
+          section.x += player.speed;
+          break;
+      }
+    } else {
+      const previousSection = player.sections[i - 1];
+
+      if (previousSection.x < section.x) {
+        section.x -= player.speed;
+      } else if (previousSection.x > section.x) {
+        section.x += player.speed;
+      } else if (previousSection.y < section.y) {
+        section.y -= player.speed;
+      } else if (previousSection.y > section.y) {
+        section.y += player.speed;
+      }
+    }
   }
-
-  player.sections.unshift(newHead);
-  player.sections.pop();
 };
 
 Rune.initLogic({
@@ -75,9 +109,10 @@ Rune.initLogic({
   setup: (allPlayers): GameState => {
     const players = allPlayers.reduce((acc, playerId, index) => {
       acc[playerId] = {
-        sections: [startPosition[index]],
+        sections: startPosition[index],
         direction: startDirection[index] as Player['direction'],
         speed: SPEED,
+        canUpgrade: false,
       };
       return acc;
     }, {} as GameState['players']);
@@ -100,6 +135,15 @@ Rune.initLogic({
       if (player.direction === 'right' && params === 'left') return;
 
       player.direction = params;
+    },
+    increaseSpeed(_params, actionContext) {
+      const player = actionContext.game.players[actionContext.playerId];
+      player.speed += 1;
+    },
+    increaseLength(_params, actionContext) {
+      const player = actionContext.game.players[actionContext.playerId];
+      const lastSection = player.sections[player.sections.length - 1];
+      player.sections.push(lastSection);
     },
   },
   update: ({ game }) => {

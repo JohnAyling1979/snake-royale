@@ -1,20 +1,28 @@
 import { Sprite } from '@pixi/react';
+import { PLAYER_SIZE, PlayerSection } from '../../logic';
 
 type SnakeProps = {
-  x: number;
-  y: number;
+  sections: PlayerSection[];
   image: string;
+  scaleX: number;
+  scaleY: number;
 };
 
-function Snake({ x, y, image }: SnakeProps) {
-  return (
-    <Sprite
-      image={image}
-      x={x}
-      y={y}
-      width={20}
-      height={20}
-    />
+function Snake({ sections, image, scaleX, scaleY }: SnakeProps) {
+  return sections.map((section, index) => {
+    if (section.active) {
+      return (
+        <Sprite
+          key={index}
+          image={image}
+          x={section.x * scaleX}
+          y={section.y * scaleY}
+          width={PLAYER_SIZE * scaleX}
+          height={PLAYER_SIZE * scaleY}
+        />
+      );
+    }
+  }
   );
 }
 

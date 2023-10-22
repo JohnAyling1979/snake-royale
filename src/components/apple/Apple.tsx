@@ -1,19 +1,21 @@
 import { Sprite } from '@pixi/react';
 import apple from '../../assets/apple.png';
+import { FOOD_SIZE } from '../../logic';
 
 type AppleProps = {
-  x: number;
-  y: number;
+  food: { x: number; y: number };
+  scaleX: number;
+  scaleY: number;
 };
 
-function Apple({ x, y}: AppleProps) {
+function Apple({ food, scaleX, scaleY}: AppleProps) {
   return (
     <Sprite
       image={apple}
-      x={x}
-      y={y}
-      width={20}
-      height={20}
+      x={food.x * scaleX}
+      y={food.y * scaleY}
+      width={FOOD_SIZE * scaleX}
+      height={FOOD_SIZE * scaleY}
     />
   );
 }

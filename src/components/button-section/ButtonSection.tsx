@@ -1,7 +1,11 @@
 import Button from '../button/Button';
 import styles from './ButtonSection.module.css';
 
-function ButtonSection() {
+type ButtonSectionProps = {
+  canUpgrade: boolean;
+};
+
+function ButtonSection({canUpgrade}: ButtonSectionProps) {
   return (
     <div className={styles.buttonSection}>
       <div className={styles.directions}>
@@ -11,8 +15,8 @@ function ButtonSection() {
         <Button className={styles.down} text="v" onClick={() => console.log('down')} />
       </div>
       <div className={styles.upgrades}>
-        <Button text="Speed" onClick={() => console.log('A')} />
-        <Button text="Length" onClick={() => console.log('B')} />
+        <Button text="Speed" onClick={() => console.log('A')} disabled={!canUpgrade}/>
+        <Button text="Length" onClick={() => console.log('B')} disabled={!canUpgrade}/>
       </div>
     </div>
   );

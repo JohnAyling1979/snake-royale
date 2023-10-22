@@ -7,8 +7,8 @@ type ButtonProps = {
   disabled?: boolean;
 };
 
-function Button({text, className, onClick}: ButtonProps) {
-  return <button className={`${styles.button} ${className}`} onClick={onClick} disabled>{text}</button>;
+function Button({text, className, onClick, disabled}: ButtonProps) {
+  return <button className={`${styles.button} ${className}`} onClick={onClick} disabled={disabled}>{text}</button>;
 }
 
 export default Button;

@@ -12,8 +12,8 @@ type ScreenProps = {
 };
 
 function Screen({player, game}: ScreenProps) {
-  const scalex = window.innerWidth / GAME_WIDTH;
-  const scaley = (window.innerHeight * .8) / GAME_HEIGHT;
+  const scaleX = window.innerWidth / GAME_WIDTH;
+  const scaleY = (window.innerHeight * .8) / GAME_HEIGHT;
 
   return (
     <Stage
@@ -28,12 +28,17 @@ function Screen({player, game}: ScreenProps) {
       {Object.keys(game.players).map((playerId) => (
         <Snake
           key={playerId}
-          x={game.players[playerId].sections[0].x * scalex}
-          y={game.players[playerId].sections[0].y * scaley}
+          sections={game.players[playerId].sections}
           image={player === playerId ? playerSnake : enemySnake}
+          scaleX={scaleX}
+          scaleY={scaleY}
         />
       ))}
-      <Apple x={game.food.x * scalex} y={game.food.y * scaley} />
+      <Apple
+        food={game.food}
+        scaleX={scaleX}
+        scaleY={scaleY}
+      />
     </Stage>
   );
 }

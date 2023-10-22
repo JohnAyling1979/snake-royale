@@ -8,3 +8,10 @@
   font-weight: 600;
   padding: 4px 8px;
 }
+
+:disabled {
+  background-color: #ccc;
+  border: 1px solid #000;
+  color: #000;
+  cursor: not-allowed;
+}
