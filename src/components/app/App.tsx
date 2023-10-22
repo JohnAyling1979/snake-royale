@@ -30,10 +30,12 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  const player = game.players[playerId];
+
   return (
     <>
       <Screen player={playerId} game={game} />
-      <ButtonSection canUpgrade={game.players[playerId].upgrades > 0} currentSpeed={game.players[playerId].speed} />
+      {player && !player.dead && <ButtonSection canUpgrade={player.upgrades > 0} currentSpeed={game.players[playerId].speed} />}
     </>
   );
 }

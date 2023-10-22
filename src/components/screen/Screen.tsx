@@ -25,15 +25,21 @@ function Screen({player, game}: ScreenProps) {
         resolution: window.devicePixelRatio || 1,
       }}
     >
-      {Object.keys(game.players).map((playerId) => (
-        <Snake
-          key={playerId}
-          sections={game.players[playerId].sections}
-          image={player === playerId ? playerSnake : enemySnake}
-          scaleX={scaleX}
-          scaleY={scaleY}
-        />
-      ))}
+      {Object.keys(game.players).map((playerId) => {
+        if (game.players[playerId].dead) {
+          return null;
+        }
+
+        return (
+          <Snake
+            key={playerId}
+            sections={game.players[playerId].sections}
+            image={player === playerId ? playerSnake : enemySnake}
+            scaleX={scaleX}
+            scaleY={scaleY}
+          />
+        );
+      })}
       <Apple
         food={game.food}
         scaleX={scaleX}

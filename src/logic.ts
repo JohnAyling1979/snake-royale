@@ -14,6 +14,7 @@ type Player = {
   direction: 'up' | 'down' | 'left' | 'right';
   speed: number;
   upgrades: number;
+  dead: boolean;
 }
 
 export interface GameState {
@@ -168,9 +169,33 @@ const  checkAppleCollision = (player: Player, game: GameState) => {
   }
 };
 
+const checkBorderCollision = (player: Player) => {
+  const head = player.sections[0];
+
+  if (head.x < 0 || head.x + PLAYER_SIZE > GAME_WIDTH || head.y < 0 || head.y + PLAYER_SIZE > GAME_HEIGHT) {
+    player.dead = true;
+  }
+};
+
+const checkGameOver = (game: GameState) => {
+  const alivePlayers = Object.values(game.players).filter((player) => !player.dead);
+
+  if (alivePlayers.length <= 1) {
+    const players = Object.keys(game.players).reduce((acc, playerId) => {
+      acc[playerId] = game.players[playerId].dead ? 'LOST' : 'WON';
+
+      return acc;
+    }, {} as Record<string, 'WON' | 'LOST'>);
+
+    Rune.gameOver({
+      players,
+    });
+  }
+};
+
 Rune.initLogic({
-  minPlayers: 1,
-  maxPlayers: 1,
+  minPlayers: 2,
+  maxPlayers: 4,
   updatesPerSecond: UPDATES_PER_SECOND,
   setup: (allPlayers): GameState => {
     const players = allPlayers.reduce((acc, playerId, index) => {
@@ -179,6 +204,7 @@ Rune.initLogic({
         direction: startDirection[index] as Player['direction'],
         speed: SPEED,
         upgrades: 0,
+        dead: false,
       };
       return acc;
     }, {} as GameState['players']);
@@ -253,8 +279,13 @@ Rune.initLogic({
   },
   update: ({ game }) => {
     Object.keys(game.players).forEach((playerId) => {
+      if (game.players[playerId].dead) return;
+
       updateSnake(game.players[playerId]);
       checkAppleCollision(game.players[playerId], game);
+      checkBorderCollision(game.players[playerId]);
+
+      checkGameOver(game);
     });
   }
 });
