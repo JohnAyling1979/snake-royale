@@ -6,11 +6,13 @@ export type PlayerSection = {
   y: number;
   active: boolean;
   direction: Player['direction'];
+  pendingChangeDirection?: Player['direction'];
 }
 
 type Player = {
   sections: PlayerSection[];
   direction: 'up' | 'down' | 'left' | 'right';
+  pendingChangeDirection?: Player['direction'];
   speed: number;
   canUpgrade: boolean;
 }
@@ -68,7 +70,12 @@ const startDirection = [
   'right',
 ];
 
-const updatePosition = (player: Player) => {
+const updateSnake = (player: Player) => {
+  if (player.pendingChangeDirection) {
+    player.direction = player.pendingChangeDirection;
+    player.pendingChangeDirection = undefined;
+  }
+
   for (let i = player.sections.length - 1; i >= 0; i--) {
     const section = player.sections[i];
 
@@ -77,52 +84,54 @@ const updatePosition = (player: Player) => {
     } else {
       const previousSection = player.sections[i - 1];
 
-      if (previousSection.direction !== section.direction) {
+      if (previousSection.direction !== section.direction && section.pendingChangeDirection === undefined) {
+        section.pendingChangeDirection = previousSection.direction;
+      }
+
+      if (section.pendingChangeDirection) {
         if (section.direction === 'down') {
-          if (previousSection.y <= section.y) {
-            section.direction = previousSection.direction;
+          if (previousSection.y <= section.y || previousSection.direction === 'down') {
+            section.direction = section.pendingChangeDirection;
+            section.pendingChangeDirection = undefined;
             section.y = previousSection.y;
 
-            if (previousSection.direction === 'left') {
+            if (section.direction === 'left') {
               section.x = previousSection.x + PLAYER_SIZE;
             } else {
               section.x = previousSection.x - PLAYER_SIZE;
             }
           }
-        }
-
-        if (section.direction === 'up') {
-          if (previousSection.y >= section.y) {
-            section.direction = previousSection.direction;
+        } else if (section.direction === 'up') {
+          if (previousSection.y >= section.y || previousSection.direction === 'up') {
+            section.direction = section.pendingChangeDirection;
+            section.pendingChangeDirection = undefined;
             section.y = previousSection.y;
 
-            if (previousSection.direction === 'left') {
+            if (section.direction === 'left') {
               section.x = previousSection.x + PLAYER_SIZE;
             } else {
               section.x = previousSection.x - PLAYER_SIZE;
             }
           }
-        }
-
-        if (section.direction === 'left') {
-          if (previousSection.x >= section.x) {
-            section.direction = previousSection.direction;
+        } else if (section.direction === 'left') {
+          if (previousSection.x >= section.x || previousSection.direction === 'left') {
+            section.direction = section.pendingChangeDirection;
+            section.pendingChangeDirection = undefined;
             section.x = previousSection.x;
 
-            if (previousSection.direction === 'up') {
+            if (section.direction === 'up') {
               section.y = previousSection.y + PLAYER_SIZE;
             } else {
               section.y = previousSection.y - PLAYER_SIZE;
             }
           }
-        }
-
-        if (section.direction === 'right') {
-          if (previousSection.x <= section.x) {
-            section.direction = previousSection.direction;
+        } else if (section.direction === 'right') {
+          if (previousSection.x <= section.x || previousSection.direction === 'right') {
+            section.direction = section.pendingChangeDirection;
+            section.pendingChangeDirection = undefined;
             section.x = previousSection.x;
 
-            if (previousSection.direction === 'up') {
+            if (section.direction === 'up') {
               section.y = previousSection.y + PLAYER_SIZE;
             } else {
               section.y = previousSection.y - PLAYER_SIZE;
@@ -150,8 +159,8 @@ const updatePosition = (player: Player) => {
 };
 
 Rune.initLogic({
-  minPlayers: 4,
-  maxPlayers: 4,
+  minPlayers: 1,
+  maxPlayers: 1,
   updatesPerSecond: UPDATES_PER_SECOND,
   setup: (allPlayers): GameState => {
     const players = allPlayers.reduce((acc, playerId, index) => {
@@ -176,12 +185,14 @@ Rune.initLogic({
     changeDirection(params, actionContext) {
       const player = actionContext.game.players[actionContext.playerId];
 
+      if (player.pendingChangeDirection) return;
+
       if (player.direction === 'up' && params === 'down') return;
       if (player.direction === 'down' && params === 'up') return;
       if (player.direction === 'left' && params === 'right') return;
       if (player.direction === 'right' && params === 'left') return;
 
-      player.direction = params;
+      player.pendingChangeDirection = params;
     },
     increaseSpeed(_params, actionContext) {
       const player = actionContext.game.players[actionContext.playerId];
@@ -195,8 +206,7 @@ Rune.initLogic({
   },
   update: ({ game }) => {
     Object.keys(game.players).forEach((playerId) => {
-      const player = game.players[playerId];
-      updatePosition(player);
+      updateSnake(game.players[playerId]);
     });
   }
 });
