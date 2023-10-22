@@ -9,10 +9,10 @@ function ButtonSection({canUpgrade}: ButtonSectionProps) {
   return (
     <div className={styles.buttonSection}>
       <div className={styles.directions}>
-        <Button className={styles.up} text="^" onClick={() => console.log('up')} />
-        <Button className={styles.right} text=">" onClick={() => console.log('right')} />
-        <Button className={styles.left} text="<" onClick={() => console.log('left')} />
-        <Button className={styles.down} text="v" onClick={() => console.log('down')} />
+        <Button className={styles.up} text="^" onClick={() => Rune.actions.changeDirection('up')} />
+        <Button className={styles.right} text=">" onClick={() => Rune.actions.changeDirection('right')} />
+        <Button className={styles.left} text="<" onClick={() => Rune.actions.changeDirection('left')} />
+        <Button className={styles.down} text="v" onClick={() => Rune.actions.changeDirection('down')} />
       </div>
       <div className={styles.upgrades}>
         <Button text="Speed" onClick={() => console.log('A')} disabled={!canUpgrade}/>

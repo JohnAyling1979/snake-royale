@@ -5,6 +5,7 @@ export type PlayerSection = {
   x: number;
   y: number;
   active: boolean;
+  direction: Player['direction'];
 }
 
 type Player = {
@@ -43,22 +44,22 @@ export const SPEED = 2;
 
 const startPosition = [
   [
-    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: 0, active: true },
-    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: - PLAYER_SIZE, active: false },
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: 0, active: true, direction: 'down' },
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: - PLAYER_SIZE, active: true, direction: 'down' },
   ],
   [
-    { x: GAME_WIDTH - PLAYER_SIZE, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: true },
-    { x: GAME_WIDTH, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: false },
+    { x: GAME_WIDTH - PLAYER_SIZE, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: true, direction: 'left' },
+    { x: GAME_WIDTH, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: true, direction: 'left' },
   ],
   [
-    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: GAME_HEIGHT - PLAYER_SIZE, active: true },
-    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: GAME_HEIGHT, active: false },
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: GAME_HEIGHT - PLAYER_SIZE, active: true, direction: 'up' },
+    { x: (GAME_WIDTH / 2) - (PLAYER_SIZE / 2), y: GAME_HEIGHT, active: true, direction: 'up' },
   ],
   [
-    { x: 0, y: GAME_HEIGHT / 2 - (PLAYER_SIZE / 2), active: true },
-    { x: - (PLAYER_SIZE / 2), y: GAME_HEIGHT / 2 - (PLAYER_SIZE / 2), active: false },
+    { x: 0, y: (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2), active: true, direction: 'right' },
+    { x: - PLAYER_SIZE, y: GAME_HEIGHT / 2 - (PLAYER_SIZE / 2), active: true, direction: 'right' },
   ],
-];
+] as PlayerSection[][];
 
 const startDirection = [
   'down',
@@ -72,38 +73,84 @@ const updatePosition = (player: Player) => {
     const section = player.sections[i];
 
     if (i === 0) {
-      switch (player.direction) {
-        case 'up':
-          section.y -= player.speed;
-          break;
-        case 'down':
-          section.y += player.speed;
-          break;
-        case 'left':
-          section.x -= player.speed;
-          break;
-        case 'right':
-          section.x += player.speed;
-          break;
-      }
+      section.direction = player.direction;
     } else {
       const previousSection = player.sections[i - 1];
 
-      if (previousSection.x < section.x) {
-        section.x -= player.speed;
-      } else if (previousSection.x > section.x) {
-        section.x += player.speed;
-      } else if (previousSection.y < section.y) {
-        section.y -= player.speed;
-      } else if (previousSection.y > section.y) {
-        section.y += player.speed;
+      if (previousSection.direction !== section.direction) {
+        if (section.direction === 'down') {
+          if (previousSection.y <= section.y) {
+            section.direction = previousSection.direction;
+            section.y = previousSection.y;
+
+            if (previousSection.direction === 'left') {
+              section.x = previousSection.x + PLAYER_SIZE;
+            } else {
+              section.x = previousSection.x - PLAYER_SIZE;
+            }
+          }
+        }
+
+        if (section.direction === 'up') {
+          if (previousSection.y >= section.y) {
+            section.direction = previousSection.direction;
+            section.y = previousSection.y;
+
+            if (previousSection.direction === 'left') {
+              section.x = previousSection.x + PLAYER_SIZE;
+            } else {
+              section.x = previousSection.x - PLAYER_SIZE;
+            }
+          }
+        }
+
+        if (section.direction === 'left') {
+          if (previousSection.x >= section.x) {
+            section.direction = previousSection.direction;
+            section.x = previousSection.x;
+
+            if (previousSection.direction === 'up') {
+              section.y = previousSection.y + PLAYER_SIZE;
+            } else {
+              section.y = previousSection.y - PLAYER_SIZE;
+            }
+          }
+        }
+
+        if (section.direction === 'right') {
+          if (previousSection.x <= section.x) {
+            section.direction = previousSection.direction;
+            section.x = previousSection.x;
+
+            if (previousSection.direction === 'up') {
+              section.y = previousSection.y + PLAYER_SIZE;
+            } else {
+              section.y = previousSection.y - PLAYER_SIZE;
+            }
+          }
+        }
       }
+    }
+
+    switch (section.direction) {
+      case 'up':
+        section.y -= player.speed;
+        break;
+      case 'down':
+        section.y += player.speed;
+        break;
+      case 'left':
+        section.x -= player.speed;
+        break;
+      case 'right':
+        section.x += player.speed;
+        break;
     }
   }
 };
 
 Rune.initLogic({
-  minPlayers: 2,
+  minPlayers: 4,
   maxPlayers: 4,
   updatesPerSecond: UPDATES_PER_SECOND,
   setup: (allPlayers): GameState => {
