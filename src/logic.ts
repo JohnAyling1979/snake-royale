@@ -193,6 +193,31 @@ const checkGameOver = (game: GameState) => {
   }
 };
 
+const checkPlayerCollision = (currentPlayerId: string, game: GameState) => {
+  const player = game.players[currentPlayerId];
+  const head = game.players[currentPlayerId].sections[0];
+
+  Object.keys(game.players).filter(playerId => playerId !== currentPlayerId).forEach((playerId) => {
+    const otherPlayer = game.players[playerId];
+
+    if (otherPlayer.dead) {
+      return;
+    }
+
+    for (let i = 0; i < otherPlayer.sections.length; i++) {
+      const section = otherPlayer.sections[i];
+
+      if (head.x <= section.x + PLAYER_SIZE &&
+        head.x + PLAYER_SIZE >= section.x &&
+        head.y <= section.y + PLAYER_SIZE &&
+        head.y + PLAYER_SIZE >= section.y) {
+        player.dead = true;
+        return;
+      }
+    }
+  });
+};
+
 Rune.initLogic({
   minPlayers: 2,
   maxPlayers: 4,
@@ -226,10 +251,18 @@ Rune.initLogic({
     changeDirection(params, actionContext) {
       const player = actionContext.game.players[actionContext.playerId];
 
-      if (player.direction === 'up' && params === 'down') return;
-      if (player.direction === 'down' && params === 'up') return;
-      if (player.direction === 'left' && params === 'right') return;
-      if (player.direction === 'right' && params === 'left') return;
+      if (player.direction === 'up' && params === 'down') {
+        return;
+      }
+      if (player.direction === 'down' && params === 'up') {
+        return;
+      }
+      if (player.direction === 'left' && params === 'right') {
+        return;
+      }
+      if (player.direction === 'right' && params === 'left') {
+        return;
+      }
 
       player.direction = params;
     },
@@ -284,12 +317,15 @@ Rune.initLogic({
   },
   update: ({ game }) => {
     Object.keys(game.players).forEach((playerId) => {
-      if (game.players[playerId].dead) return;
+      const player = game.players[playerId];
+      if (player.dead) {
+        return;
+      }
 
-      updateSnake(game.players[playerId]);
-      checkAppleCollision(game.players[playerId], game);
-      checkBorderCollision(game.players[playerId]);
-
+      updateSnake(player);
+      checkAppleCollision(player, game);
+      checkBorderCollision(player);
+      checkPlayerCollision(playerId, game);
       checkGameOver(game);
     });
   }
