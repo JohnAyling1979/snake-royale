@@ -33,7 +33,7 @@ function App() {
   return (
     <>
       <Screen player={playerId} game={game} />
-      <ButtonSection canUpgrade={game.players[playerId].canUpgrade} />
+      <ButtonSection canUpgrade={game.players[playerId].upgrades > 0} currentSpeed={game.players[playerId].speed} />
     </>
   );
 }
