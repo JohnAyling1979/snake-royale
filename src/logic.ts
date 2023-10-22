@@ -217,6 +217,11 @@ Rune.initLogic({
       },
     };
   },
+  events: {
+    playerLeft: (playerId, { game }) => {
+      delete game.players[playerId];
+    },
+  },
   actions: {
     changeDirection(params, actionContext) {
       const player = actionContext.game.players[actionContext.playerId];
