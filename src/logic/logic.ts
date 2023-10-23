@@ -32,5 +32,10 @@ Rune.initLogic({
     increaseSpeed,
     increaseLength,
   },
+  events: {
+    playerLeft: (playerId, eventContext) => {
+      delete eventContext.game.players[playerId];
+    }
+  },
   update,
 });
