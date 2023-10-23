@@ -1,17 +1,7 @@
 import { useEffect, useState } from 'react';
-import { GameState } from '../../logic.ts';
 import Screen from '../screen/Screen.tsx';
 import ButtonSection from '../button-section/ButtonSection.tsx';
-
-type RunePlayer = {
-  avatarUrl: string;
-  displayName: string;
-  playerId: string;
-};
-
-type RunePlayers = {
-  [playerId: string]: RunePlayer;
-};
+import { GameState } from '../../types.ts';
 
 function App() {
   const [game, setGame] = useState<GameState>();

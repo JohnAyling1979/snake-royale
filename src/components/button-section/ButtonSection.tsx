@@ -1,4 +1,4 @@
-import { MAX_SPEED } from '../../logic';
+import { MAX_SPEED } from '../../constants';
 import Button from '../button/Button';
 import styles from './ButtonSection.module.css';
 

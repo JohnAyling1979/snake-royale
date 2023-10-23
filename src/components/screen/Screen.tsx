@@ -1,9 +1,10 @@
 import { Stage } from '@pixi/react';
 import Snake from '../snake/Snake';
 import Apple from '../apple/Apple';
-import { GAME_HEIGHT, GAME_WIDTH, GameState } from '../../logic';
 import playerSnake from '../../assets/playerSnake.png';
 import enemySnake from '../../assets/enemySnake.png';
+import { GameState } from '../../types';
+import { GAME_HEIGHT, GAME_WIDTH } from '../../constants';
 
 
 type ScreenProps = {

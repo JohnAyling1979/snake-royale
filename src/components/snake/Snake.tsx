@@ -1,5 +1,6 @@
 import { Sprite } from '@pixi/react';
-import { PLAYER_SIZE, PlayerSection } from '../../logic';
+import { PlayerSection } from '../../types';
+import { PLAYER_SIZE } from '../../constants';
 
 type SnakeProps = {
   sections: PlayerSection[];

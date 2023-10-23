@@ -1,6 +1,6 @@
 import { Sprite } from '@pixi/react';
 import apple from '../../assets/apple.png';
-import { FOOD_SIZE } from '../../logic';
+import { FOOD_SIZE } from '../../constants';
 
 type AppleProps = {
   food: { x: number; y: number };
