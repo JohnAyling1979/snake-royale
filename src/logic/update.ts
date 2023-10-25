@@ -134,10 +134,6 @@ const checkPlayerCollision = (currentPlayerId: string, game: GameState) => {
   Object.keys(game.players).filter(playerId => playerId !== currentPlayerId).forEach((playerId) => {
     const otherPlayer = game.players[playerId];
 
-    if (otherPlayer.dead) {
-      return;
-    }
-
     for (let i = 0; i < otherPlayer.sections.length; i++) {
       const section = otherPlayer.sections[i];
 

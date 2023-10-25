@@ -15,7 +15,6 @@ function App() {
       },
     });
 
-    Rune.actions.ready();
   }, []);
 
   if (!game) {
@@ -24,10 +23,16 @@ function App() {
 
   const player = game.players[playerId];
 
+  if (!player.ready) {
+    Rune.actions.ready();
+  }
+
+  const hideButtonSection = player && player.dead;
+
   return (
     <>
       <Screen player={playerId} game={game} />
-      {player && !player.dead && <ButtonSection canUpgrade={player.upgrades > 0} currentSpeed={game.players[playerId].speed} />}
+      {!hideButtonSection && <ButtonSection canUpgrade={player.upgrades > 0} currentSpeed={game.players[playerId].speed} />}
     </>
   );
 }
