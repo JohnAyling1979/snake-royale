@@ -18,6 +18,7 @@ export type Player = {
   speed: number;
   upgrades: number;
   dead: boolean;
+  ready: boolean;
 }
 
 export interface GameState {
@@ -34,6 +35,7 @@ export type GameActions = {
   changeDirection: (direction: Player['direction']) => void;
   increaseSpeed: () => void;
   increaseLength: () => void;
+  ready(): () => void;
 }
 
 export type ActionContext = {

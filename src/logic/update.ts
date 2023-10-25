@@ -2,6 +2,10 @@ import { PLAYER_SIZE, FOOD_SIZE, GAME_WIDTH, GAME_HEIGHT, COLLISION_OFFSET } fro
 import { GameState, Player, Update } from '../types';
 
 export const update: Update = ({ game }) => {
+  if (Object.keys(game.players).filter((playerId) => !game.players[playerId].ready).length > 0) {
+    return;
+  }
+
   Object.keys(game.players).forEach((playerId) => {
     const player = game.players[playerId];
 

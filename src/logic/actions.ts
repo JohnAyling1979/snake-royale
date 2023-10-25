@@ -69,3 +69,8 @@ export const increaseLength: Action = (_params, actionContext) => {
 
   player.upgrades--;
 };
+
+export const ready: Action = (_params, actionContext) => {
+  const player = actionContext.game.players[actionContext.playerId];
+  player.ready = true;
+};

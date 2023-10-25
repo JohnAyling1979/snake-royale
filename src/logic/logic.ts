@@ -1,6 +1,6 @@
 import { UPDATES_PER_SECOND, startPosition, startDirection, SPEED, GAME_WIDTH, FOOD_SIZE, GAME_HEIGHT } from '../constants';
 import { GameState, Player } from '../types';
-import { changeDirection, increaseLength, increaseSpeed } from './actions';
+import { changeDirection, increaseLength, increaseSpeed, ready } from './actions';
 import { update } from './update';
 
 Rune.initLogic({
@@ -15,6 +15,7 @@ Rune.initLogic({
         speed: SPEED,
         upgrades: 0,
         dead: false,
+        ready: false,
       };
       return acc;
     }, {} as GameState['players']);
@@ -31,6 +32,7 @@ Rune.initLogic({
     changeDirection,
     increaseSpeed,
     increaseLength,
+    ready,
   },
   events: {
     playerLeft: (playerId, eventContext) => {

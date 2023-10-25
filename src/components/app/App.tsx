@@ -14,10 +14,12 @@ function App() {
         setPlayerId(yourPlayerId ?? '');
       },
     });
+
+    Rune.actions.ready();
   }, []);
 
   if (!game) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   const player = game.players[playerId];
