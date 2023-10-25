@@ -10,6 +10,7 @@ import enemySnakeHead1 from '../../assets/snakeHeadOrange-1.png';
 import enemySnakeHead2 from '../../assets/snakeHeadOrange-2.png';
 import enemySnakeBody1 from '../../assets/snakeBodyOrange-1.png';
 import enemySnakeBody2 from '../../assets/snakeBodyOrange-2.png';
+import { InterpolatorLatency } from 'rune-games-sdk';
 
 const playerSnakeHeadImages = [
   playerSnakeHead1,
@@ -43,15 +44,20 @@ type SnakeProps = {
   isPlayer: boolean;
   scaleX: number;
   scaleY: number;
+  interpolator: InterpolatorLatency<number | number[]> | undefined;
 };
 
-function Snake({ sections, isPlayer, scaleX, scaleY }: SnakeProps) {
+function Snake({ sections, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
   return sections.map((section, index) => {
     if (section.active) {
       let images = isPlayer ? playerSnakeBodyImages : enemySnakeBodyImages;
+      let position = [section.x, section.y];
 
       if (index === 0) {
         images = isPlayer ? playerSnakeHeadImages : enemySnakeHeadImages;
+        if (interpolator) {
+          position = interpolator.getPosition() as number[];
+        }
       }
 
       return (
@@ -59,8 +65,8 @@ function Snake({ sections, isPlayer, scaleX, scaleY }: SnakeProps) {
           key={index}
           anchor={0.5}
           images={images}
-          x={section.x * scaleX}
-          y={section.y * scaleY}
+          x={position[0] * scaleX}
+          y={position[1] * scaleY}
           rotation={rotationMap[section.direction]}
           width={PLAYER_SIZE * scaleX}
           height={PLAYER_SIZE * scaleY}

@@ -2,23 +2,28 @@ import { PLAYER_SIZE, FOOD_SIZE, GAME_WIDTH, GAME_HEIGHT, COLLISION_OFFSET } fro
 import { GameState, Player, Update } from '../types';
 
 export const update: Update = ({ game }) => {
-  if (Object.keys(game.players).filter((playerId) => !game.players[playerId].ready).length > 0) {
-    return;
+  if (game.state === 'waiting') {
+
+    if (Object.keys(game.players).filter((playerId) => !game.players[playerId].ready).length === 0) {
+      game.state = 'playing';
+    }
   }
 
-  Object.keys(game.players).forEach((playerId) => {
-    const player = game.players[playerId];
+  if (game.state === 'playing') {
+    Object.keys(game.players).forEach((playerId) => {
+      const player = game.players[playerId];
 
-    if (player.dead) {
-      return;
-    }
+      if (player.dead) {
+        return;
+      }
 
-    updateSnake(player);
-    checkAppleCollision(player, game);
-    checkBorderCollision(player);
-    checkPlayerCollision(playerId, game);
-    checkGameOver(game);
-  });
+      updateSnake(player);
+      checkAppleCollision(player, game);
+      checkBorderCollision(player);
+      checkPlayerCollision(playerId, game);
+      checkGameOver(game);
+    });
+  }
 };
 
 const updateSnake = (player: Player) => {
@@ -157,6 +162,8 @@ const checkGameOver = (game: GameState) => {
   const alivePlayers = Object.values(game.players).filter((player) => !player.dead);
 
   if (alivePlayers.length <= 1) {
+    game.state = 'gameover';
+
     const players = Object.keys(game.players).reduce((acc, playerId) => {
       acc[playerId] = game.players[playerId].dead ? 'LOST' : 'WON';
 

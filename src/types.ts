@@ -29,6 +29,7 @@ export interface GameState {
     x: number;
     y: number;
   };
+  state: 'waiting' | 'playing' | 'gameover';
 }
 
 export type GameActions = {

@@ -1,13 +1,15 @@
-import { Sprite, Stage } from '@pixi/react';
+import { BitmapText, Sprite, Stage } from '@pixi/react';
 import Snake from '../snake/Snake';
 import Apple from '../apple/Apple';
 import { GameState } from '../../types';
 import { GAME_HEIGHT, GAME_WIDTH, PLAYER_SIZE } from '../../constants';
 import groundImage from '../../assets/ground.png';
+import { InterpolatorLatency } from 'rune-games-sdk';
 
 type ScreenProps = {
   player: string;
   game: GameState;
+  enemyInterpolators: {[key: string]: InterpolatorLatency<number | number[]>};
 };
 
 const ground:[number, number][] = [];
@@ -18,7 +20,7 @@ for (let i = 0; i < GAME_WIDTH; i+=PLAYER_SIZE * 2) {
   }
 }
 
-function Screen({player, game}: ScreenProps) {
+function Screen({player, game, enemyInterpolators}: ScreenProps) {
   const scaleX = window.innerWidth / GAME_WIDTH;
   const scaleY = (window.innerHeight * .8) / GAME_HEIGHT;
 
@@ -43,10 +45,6 @@ function Screen({player, game}: ScreenProps) {
         />
       ))}
       {Object.keys(game.players).map((playerId) => {
-        if (game.players[playerId].dead) {
-          // return null;
-        }
-
         return (
           <Snake
             key={playerId}
@@ -54,6 +52,7 @@ function Screen({player, game}: ScreenProps) {
             isPlayer={player === playerId}
             scaleX={scaleX}
             scaleY={scaleY}
+            interpolator={enemyInterpolators[playerId]}
           />
         );
       })}

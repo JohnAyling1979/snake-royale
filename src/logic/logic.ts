@@ -26,6 +26,7 @@ Rune.initLogic({
         x: Math.floor(Math.random() * (GAME_WIDTH - FOOD_SIZE)),
         y: Math.floor(Math.random() * (GAME_HEIGHT - FOOD_SIZE)),
       },
+      state: 'waiting',
     };
   },
   actions: {
