@@ -1,4 +1,4 @@
-import { PLAYER_SIZE, FOOD_SIZE, GAME_WIDTH, GAME_HEIGHT } from '../constants';
+import { PLAYER_SIZE, FOOD_SIZE, GAME_WIDTH, GAME_HEIGHT, COLLISION_OFFSET } from '../constants';
 import { GameState, Player, Update } from '../types';
 
 export const update: Update = ({ game }) => {
@@ -103,10 +103,10 @@ const updateSnake = (player: Player) => {
 const  checkAppleCollision = (player: Player, game: GameState) => {
   const head = player.sections[0];
 
-  if (head.x <= game.food.x + FOOD_SIZE &&
-    head.x + PLAYER_SIZE >= game.food.x &&
-    head.y <= game.food.y + FOOD_SIZE &&
-    head.y + PLAYER_SIZE >= game.food.y) {
+  if (head.x - COLLISION_OFFSET <= game.food.x + FOOD_SIZE &&
+    head.x + COLLISION_OFFSET >= game.food.x &&
+    head.y - COLLISION_OFFSET <= game.food.y + FOOD_SIZE &&
+    head.y + COLLISION_OFFSET >= game.food.y) {
 
     game.food.x = Math.floor(Math.random() * (GAME_WIDTH - FOOD_SIZE));
     game.food.y = Math.floor(Math.random() * (GAME_HEIGHT - FOOD_SIZE));
@@ -118,7 +118,7 @@ const  checkAppleCollision = (player: Player, game: GameState) => {
 const checkBorderCollision = (player: Player) => {
   const head = player.sections[0];
 
-  if (head.x < 0 || head.x + PLAYER_SIZE > GAME_WIDTH || head.y < 0 || head.y + PLAYER_SIZE > GAME_HEIGHT) {
+  if (head.x - COLLISION_OFFSET < 0 || head.x + COLLISION_OFFSET > GAME_WIDTH || head.y - COLLISION_OFFSET < 0 || head.y + COLLISION_OFFSET > GAME_HEIGHT) {
     player.dead = true;
   }
 };
@@ -137,10 +137,15 @@ const checkPlayerCollision = (currentPlayerId: string, game: GameState) => {
     for (let i = 0; i < otherPlayer.sections.length; i++) {
       const section = otherPlayer.sections[i];
 
-      if (head.x <= section.x + PLAYER_SIZE &&
-        head.x + PLAYER_SIZE >= section.x &&
-        head.y <= section.y + PLAYER_SIZE &&
-        head.y + PLAYER_SIZE >= section.y) {
+      if (!section.active) {
+        continue;
+      }
+
+      if (head.x - COLLISION_OFFSET <= section.x + COLLISION_OFFSET &&
+        head.x + COLLISION_OFFSET >= section.x - COLLISION_OFFSET &&
+        head.y - COLLISION_OFFSET <= section.y + COLLISION_OFFSET &&
+        head.y + COLLISION_OFFSET >= section.y - COLLISION_OFFSET
+      ) {
         player.dead = true;
         return;
       }

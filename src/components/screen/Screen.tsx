@@ -1,8 +1,6 @@
 import { Stage } from '@pixi/react';
 import Snake from '../snake/Snake';
 import Apple from '../apple/Apple';
-import playerSnake from '../../assets/playerSnake.png';
-import enemySnake from '../../assets/enemySnake.png';
 import { GameState } from '../../types';
 import { GAME_HEIGHT, GAME_WIDTH } from '../../constants';
 
@@ -21,21 +19,21 @@ function Screen({player, game}: ScreenProps) {
       width={window.innerWidth}
       height={window.innerHeight * .8}
       options={{
-        backgroundColor: 0x000000,
+        backgroundColor: 0x505050,
         antialias: true,
         resolution: window.devicePixelRatio || 1,
       }}
     >
       {Object.keys(game.players).map((playerId) => {
         if (game.players[playerId].dead) {
-          return null;
+          // return null;
         }
 
         return (
           <Snake
             key={playerId}
             sections={game.players[playerId].sections}
-            image={player === playerId ? playerSnake : enemySnake}
+            isPlayer={player === playerId}
             scaleX={scaleX}
             scaleY={scaleY}
           />
