@@ -1,4 +1,4 @@
-import { AnimatedSprite, Sprite } from '@pixi/react';
+import { AnimatedSprite } from '@pixi/react';
 import * as PIXI from 'pixi.js';
 import { PlayerSection } from '../../types';
 import { PLAYER_SIZE } from '../../constants';
