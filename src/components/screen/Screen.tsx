@@ -1,14 +1,22 @@
-import { Stage } from '@pixi/react';
+import { Sprite, Stage } from '@pixi/react';
 import Snake from '../snake/Snake';
 import Apple from '../apple/Apple';
 import { GameState } from '../../types';
-import { GAME_HEIGHT, GAME_WIDTH } from '../../constants';
-
+import { GAME_HEIGHT, GAME_WIDTH, PLAYER_SIZE } from '../../constants';
+import groundImage from '../../assets/ground.png';
 
 type ScreenProps = {
   player: string;
   game: GameState;
 };
+
+const ground:[number, number][] = [];
+
+for (let i = 0; i < GAME_WIDTH; i+=PLAYER_SIZE * 2) {
+  for (let j = 0; j < GAME_HEIGHT; j+=PLAYER_SIZE * 2) {
+    ground.push([i, j]);
+  }
+}
 
 function Screen({player, game}: ScreenProps) {
   const scaleX = window.innerWidth / GAME_WIDTH;
@@ -24,6 +32,16 @@ function Screen({player, game}: ScreenProps) {
         resolution: window.devicePixelRatio || 1,
       }}
     >
+      {ground.map(([x, y]) => (
+        <Sprite
+          key={`${x}-${y}`}
+          image={groundImage}
+          x={x * scaleX}
+          y={y * scaleY}
+          width={PLAYER_SIZE * scaleX * 2}
+          height={PLAYER_SIZE * scaleY * 2}
+        />
+      ))}
       {Object.keys(game.players).map((playerId) => {
         if (game.players[playerId].dead) {
           // return null;
