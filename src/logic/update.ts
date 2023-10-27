@@ -134,6 +134,7 @@ const checkBorderCollision = (player: Player) => {
 
   if (head.x - COLLISION_OFFSET < 0 || head.x + COLLISION_OFFSET > GAME_WIDTH || head.y - COLLISION_OFFSET < 0 || head.y + COLLISION_OFFSET > GAME_HEIGHT) {
     player.dead = true;
+    player.playSound = 'die';
   }
 };
 
@@ -157,6 +158,7 @@ const checkPlayerCollision = (currentPlayerId: string, game: GameState) => {
         head.y + COLLISION_OFFSET >= section.y - COLLISION_OFFSET
       ) {
         player.dead = true;
+        player.playSound = 'die';
         return;
       }
     }

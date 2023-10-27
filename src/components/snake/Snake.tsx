@@ -11,6 +11,7 @@ import enemySnakeHead2 from '../../assets/snakeHeadOrange-2.png';
 import enemySnakeBody1 from '../../assets/snakeBodyOrange-1.png';
 import enemySnakeBody2 from '../../assets/snakeBodyOrange-2.png';
 import eatPath from '../../assets/eat.mp3';
+import diePath from '../../assets/die.mp3';
 import { InterpolatorLatency } from 'rune-games-sdk';
 
 const playerSnakeHeadImages = [
@@ -41,6 +42,7 @@ const rotationMap = {
 };
 
 const eat = new Audio(eatPath);
+const die = new Audio(diePath);
 
 type SnakeProps = {
   player: Player;
@@ -54,6 +56,8 @@ function Snake({ player, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
   if (player.playSound) {
     if (player.playSound === 'eat') {
       eat.play();
+    } else if (player.playSound === 'die') {
+      die.play();
     }
   }
 
