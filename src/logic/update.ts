@@ -13,6 +13,10 @@ export const update: Update = ({ game }) => {
     Object.keys(game.players).forEach((playerId) => {
       const player = game.players[playerId];
 
+      if (player.playSound) {
+        player.playSound = undefined;
+      }
+
       if (player.dead) {
         return;
       }
@@ -121,6 +125,7 @@ const  checkAppleCollision = (player: Player, game: GameState) => {
     game.food.y = Math.floor(Math.random() * (GAME_HEIGHT - FOOD_SIZE));
 
     player.upgrades++;
+    player.playSound = 'eat';
   }
 };
 

@@ -1,6 +1,6 @@
 import { AnimatedSprite } from '@pixi/react';
 import * as PIXI from 'pixi.js';
-import { PlayerSection } from '../../types';
+import { Player } from '../../types';
 import { PLAYER_SIZE } from '../../constants';
 import playerSnakeHead1 from '../../assets/snakeHeadGreen-1.png';
 import playerSnakeHead2 from '../../assets/snakeHeadGreen-2.png';
@@ -10,6 +10,7 @@ import enemySnakeHead1 from '../../assets/snakeHeadOrange-1.png';
 import enemySnakeHead2 from '../../assets/snakeHeadOrange-2.png';
 import enemySnakeBody1 from '../../assets/snakeBodyOrange-1.png';
 import enemySnakeBody2 from '../../assets/snakeBodyOrange-2.png';
+import eatPath from '../../assets/eat.mp3';
 import { InterpolatorLatency } from 'rune-games-sdk';
 
 const playerSnakeHeadImages = [
@@ -39,16 +40,25 @@ const rotationMap = {
   'right': 270 * PIXI.DEG_TO_RAD,
 };
 
+const eat = new Audio(eatPath);
+
 type SnakeProps = {
-  sections: PlayerSection[];
+  player: Player;
   isPlayer: boolean;
   scaleX: number;
   scaleY: number;
   interpolator: InterpolatorLatency<number | number[]> | undefined;
 };
 
-function Snake({ sections, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
-  return sections.map((section, index) => {
+function Snake({ player, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
+  if (player.playSound) {
+    if (player.playSound === 'eat') {
+      eat.play();
+    }
+  }
+
+
+  return player.sections.map((section, index) => {
     if (section.active) {
       let images = isPlayer ? playerSnakeBodyImages : enemySnakeBodyImages;
       let position = [section.x, section.y];

@@ -19,6 +19,7 @@ export type Player = {
   upgrades: number;
   dead: boolean;
   ready: boolean;
+  playSound?: string
 }
 
 export interface GameState {

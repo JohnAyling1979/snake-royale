@@ -1,4 +1,4 @@
-import { BitmapText, Sprite, Stage } from '@pixi/react';
+import { Sprite, Stage } from '@pixi/react';
 import Snake from '../snake/Snake';
 import Apple from '../apple/Apple';
 import { GameState } from '../../types';
@@ -48,7 +48,7 @@ function Screen({player, game, enemyInterpolators}: ScreenProps) {
         return (
           <Snake
             key={playerId}
-            sections={game.players[playerId].sections}
+            player={game.players[playerId]}
             isPlayer={player === playerId}
             scaleX={scaleX}
             scaleY={scaleY}

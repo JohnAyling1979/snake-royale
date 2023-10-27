@@ -29,7 +29,7 @@ function App() {
             const gamePosition = [game.players[opponentId].sections[0].x, game.players[opponentId].sections[0].y];
 
             const futureGamePosition = [futureGame.players[opponentId].sections[0].x, futureGame.players[opponentId].sections[0].y];
-            console.log(opponentId, gamePosition, futureGamePosition);
+
             enemyInterpolators[opponentId].update({
               game: gamePosition,
               futureGame: futureGamePosition,
