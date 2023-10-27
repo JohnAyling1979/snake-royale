@@ -11,7 +11,7 @@ import styles from './App.module.css';
 const enemyInterpolators: { [key: string]: InterpolatorLatency<number | number[]> } = {};
 const backgroundMusic = new Audio(backgroundPath);
 backgroundMusic.loop = true;
-backgroundMusic.volume = 0.3;
+backgroundMusic.volume = 0.25;
 
 function App() {
   const [game, setGame] = useState<GameState>();

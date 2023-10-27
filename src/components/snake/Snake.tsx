@@ -53,7 +53,7 @@ type SnakeProps = {
 };
 
 function Snake({ player, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
-  if (player.playSound) {
+  if (isPlayer && player.playSound) {
     if (player.playSound === 'eat') {
       eat.play();
     } else if (player.playSound === 'die') {
