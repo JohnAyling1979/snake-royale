@@ -1,16 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Screen from '../screen/Screen.tsx';
 import ButtonSection from '../button-section/ButtonSection.tsx';
 import { GameState } from '../../types.ts';
 import { MAX_SPEED } from '../../constants.ts';
 import { InterpolatorLatency } from 'rune-games-sdk';
+import backgroundPath from '../../assets/background.mp3';
+import Button from '../button/Button.tsx';
+import styles from './App.module.css';
 
 const enemyInterpolators: { [key: string]: InterpolatorLatency<number | number[]> } = {};
+const backgroundMusic = new Audio(backgroundPath);
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.3;
 
 function App() {
   const [game, setGame] = useState<GameState>();
   const [playerId, setPlayerId] = useState<string>('');
-  const readRef = useRef<number>();
 
   useEffect(() => {
     Rune.initClient({
@@ -50,18 +55,21 @@ function App() {
     return <Screen player={playerId} game={game} enemyInterpolators={enemyInterpolators} />;
   }
 
-  if (!player.ready && !readRef.current) {
-    const timeout = setTimeout(() => {
-      Rune.actions.ready();
-
-      readRef.current = undefined;
-    }, 1000);
-
-    readRef.current = timeout as unknown as number;
-  }
-
   return (
     <>
+      {!player.ready && (
+        <Button
+          text="Ready"
+          className={styles.readyButton}
+          onClick={
+            () => {
+              backgroundMusic.play();
+              Rune.actions.ready();
+            }
+          }
+        />
+        )
+      }
       <Screen player={playerId} game={game} enemyInterpolators={enemyInterpolators} />
       {!player.dead && !(game.state === 'gameover') && <ButtonSection canUpgrade={player.upgrades > 0} currentSpeed={game.players[playerId].speed} />}
     </>

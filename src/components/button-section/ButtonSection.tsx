@@ -1,6 +1,6 @@
 import { MAX_SPEED } from '../../constants';
 import Button from '../button/Button';
-import upgradePath from '../../assets/upgrade.wav';
+import upgradePath from '../../assets/upgrade.mp3';
 import styles from './ButtonSection.module.css';
 
 type ButtonSectionProps = {
