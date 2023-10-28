@@ -4,10 +4,12 @@ import { Player } from '../../types';
 import { PLAYER_SIZE } from '../../constants';
 import playerSnakeHead1 from '../../assets/snakeHeadGreen-1.png';
 import playerSnakeHead2 from '../../assets/snakeHeadGreen-2.png';
+import playerSnakeHeadDead from '../../assets/snakeHeadGreen-dead.png';
 import playerSnakeBody1 from '../../assets/snakeBodyGreen-1.png';
 import playerSnakeBody2 from '../../assets/snakeBodyGreen-2.png';
 import enemySnakeHead1 from '../../assets/snakeHeadOrange-1.png';
 import enemySnakeHead2 from '../../assets/snakeHeadOrange-2.png';
+import enemySnakeHeadDead from '../../assets/snakeHeadOrange-dead.png';
 import enemySnakeBody1 from '../../assets/snakeBodyOrange-1.png';
 import enemySnakeBody2 from '../../assets/snakeBodyOrange-2.png';
 import eatPath from '../../assets/eat.mp3';
@@ -19,6 +21,10 @@ const playerSnakeHeadImages = [
   playerSnakeHead2,
 ];
 
+const playerSnakeHeadDeadImage = [
+  playerSnakeHeadDead,
+];
+
 const playerSnakeBodyImages = [
   playerSnakeBody1,
   playerSnakeBody2,
@@ -27,6 +33,10 @@ const playerSnakeBodyImages = [
 const enemySnakeHeadImages = [
   enemySnakeHead1,
   enemySnakeHead2,
+];
+
+const enemySnakeHeadDeadImage = [
+  enemySnakeHeadDead,
 ];
 
 const enemySnakeBodyImages = [
@@ -68,7 +78,12 @@ function Snake({ player, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
       let position = [section.x, section.y];
 
       if (index === 0) {
-        images = isPlayer ? playerSnakeHeadImages : enemySnakeHeadImages;
+        if (player.dead) {
+          images = isPlayer ? playerSnakeHeadDeadImage : enemySnakeHeadDeadImage;
+        } else {
+          images = isPlayer ? playerSnakeHeadImages : enemySnakeHeadImages;
+        }
+
         if (interpolator) {
           position = interpolator.getPosition() as number[];
         }
