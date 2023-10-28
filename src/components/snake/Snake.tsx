@@ -84,7 +84,7 @@ function Snake({ player, isPlayer, scaleX, scaleY, interpolator }: SnakeProps) {
           rotation={rotationMap[section.direction]}
           width={PLAYER_SIZE * scaleX}
           height={PLAYER_SIZE * scaleY}
-          isPlaying={true}
+          isPlaying={!player.dead}
           initialFrame={0}
           animationSpeed={0.05}
         />
